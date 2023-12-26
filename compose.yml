@@ -1,0 +1,47 @@
+services:
+  redis:
+    image: redislabs/redismod
+  pg:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=dumbpass
+    volumes:
+      - ./instance:/var/lib/postgresql/data
+  omnyom:
+    build:
+      context: .
+      target: builder
+    image: omnyomapp
+    # flask requires SIGINT to stop gracefully
+    # (default stop signal from Compose is SIGTERM)
+    stop_signal: SIGINT
+    secrets:
+      - dev_database_secret
+      - test_database_secret
+    # environment:
+    # - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://devuser:dumbpass@pg:5432/omnyom
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+    depends_on:
+      - pg
+      - redis
+  worker:
+    image: omnyomapp
+    command: ["dramatiq app.initializers.dramatiq_redis app.operations.refresh"]
+    volumes:
+      - .:/code
+    secrets:
+      - dev_database_secret
+      - test_database_secret
+    depends_on:
+      - omnyom
+      - pg
+      - redis
+secrets:
+  dev_database_secret:
+    file: ./dev_database_secret.txt
+  test_database_secret:
+    file: ./test_database_secret.txt
