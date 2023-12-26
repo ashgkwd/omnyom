@@ -42,6 +42,6 @@ services:
       - redis
 secrets:
   dev_database_secret:
-    file: ./dev_database_secret.txt
+    file: ./secrets/dev_database_secret.txt
   test_database_secret:
-    file: ./test_database_secret.txt
+    file: ./secrets/test_database_secret.txt
