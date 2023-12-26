@@ -1,0 +1,11 @@
+TEST_DATABASE_NAME=test_omnyom
+TEST_DATABASE_URI=$(cat ./test_database_secret.txt)
+docker compose stop worker
+docker compose up -d pg redis omnyom
+# docker compose run -d worker 'bash -c "env APP_SETTINGS=app.config.TestConfig dramatiq app.initializers.dramatiq_redis app.operations.refresh"'
+# NOTE: it may take some time before containers are ready
+# NOTE: db drop may take longer if its in use
+docker compose exec pg psql -U devuser -c "drop database $TEST_DATABASE_NAME;"
+docker compose exec pg psql -U devuser -c "create database $TEST_DATABASE_NAME owner devuser;"
+docker compose exec omnyom bash -c "env SQLALCHEMY_DATABASE_URI=$TEST_DATABASE_URI APP_SETTINGS=app.config.TestConfig flask db upgrade"
+docker compose exec omnyom bash -c "env SQLALCHEMY_DATABASE_URI=$TEST_DATABASE_URI APP_SETTINGS=app.config.TestConfig pytest"
