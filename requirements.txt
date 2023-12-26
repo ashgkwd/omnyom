@@ -1,0 +1,8 @@
+Flask==3
+Flask-SQLAlchemy==3
+Flask-Migrate==4
+psycopg2
+feedparser==6
+pytest
+pytest-flask
+dramatiq[redis, watch]
