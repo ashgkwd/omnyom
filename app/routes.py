@@ -4,7 +4,7 @@ from flask import jsonify, request
 import app.initializers.dramatiq_redis
 
 from . import app
-from .operations import refresh, search, subscribe, unsubscribe
+from .operations import mark_feed_item_as, refresh, search, subscribe, unsubscribe
 
 
 @app.route("/")
@@ -27,7 +27,13 @@ def remove_subscription(feed_id: int):
 
 @app.route("/feeds")
 def feeds_index():
-    feeds = list(search.execute())
+    """
+    Search feeds with given filters
+
+    Args:
+    - filter_by: Optional[str] -- either 'read', 'unread' or None. None represents unfiltered
+    """
+    feeds = list(search.execute(request.args.get('filter_by')))
     return jsonify({"data": feeds})
 
 
@@ -54,3 +60,18 @@ def feed_items_index(feed_id: int):
     if feed is not None:
         return jsonify({"data": feed.feed_items})
     return {"error": "feed not found"}
+
+
+@app.route("/feed_items/<feed_item_id>/mark", methods=['POST', 'PUT'])
+def feed_items_mark(feed_item_id: int):
+    """
+    Marks the given feed item as either read or unread
+
+    Args:
+    - mark: str -- one of 'read' or 'unread'. All other values are treated as unread
+    """
+    mark = 'read' if request.get_json()['mark'] == 'read' else 'unread'
+    feed_item_read = mark_feed_item_as.execute(feed_item_id, mark_as=mark)
+    if feed_item_read is not None:
+        return {"data": {"message": f"marked item as {mark}"}}
+    return {"error": f"failed to mark feed item as {mark}"}

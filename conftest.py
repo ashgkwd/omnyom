@@ -86,13 +86,22 @@ def feed_item_data():
 @pytest.fixture
 def ensure_feed(feed_url):
     with app_test.app_context():
-        first_feed = db.session.query(Feed).first()
+        first_feed = db.session.query(Feed).filter(
+            Feed.url == feed_url).first()
         if first_feed is None:
             feed = Feed(url=feed_url)
             db.session.add(feed)
             db.session.commit()
             return feed.id
         return first_feed.id
+
+
+@pytest.fixture
+def ensure_no_feeds():
+    with app_test.app_context():
+        feeds = db.session.execute(select(Feed)).scalars()
+        [db.session.delete(i) for i in feeds]
+        db.session.commit()
 
 
 @pytest.fixture
@@ -104,3 +113,19 @@ def ensure_feed_without_items(feed_url, ensure_feed):
         [db.session.delete(i) for i in feed_items]
         db.session.commit()
     return feed_id
+
+
+@pytest.fixture
+def feed_item(feed_item_data, ensure_feed):
+    feed_id = ensure_feed
+    with app_test.app_context():
+        feed_item = db.session.query(FeedItem).where(FeedItem.feed_id == feed_id).where(
+            FeedItem.url == feed_item_data['link']).first()
+        if feed_item is not None:
+            return feed_item.id
+        else:
+            feed_item = FeedItem.from_dict(
+                with_feed_id=feed_id)(feed_item_data)
+            db.session.add(feed_item)
+            db.session.commit()
+            return feed_item.id

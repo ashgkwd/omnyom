@@ -3,7 +3,7 @@ import json
 from flask import url_for
 
 
-def test_create_subscription(client, post_headers, feed_url):
+def test_create_subscription(client, post_headers, feed_url, ensure_no_feeds):
     payload = json.dumps({'url': feed_url})
     response = client.post(
         url_for("create_subscription"),

@@ -26,7 +26,8 @@ class FeedItem(db.Model):
         ForeignKey("feeds.id"), nullable=False)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), default=func.now())
-    # feed: Mapped["Feed"] = relationship(viewonly=True)
+    feed_item_read: Mapped["FeedItemRead"] = relationship(
+        cascade="all, delete-orphan")
 
     @classmethod
     def from_dict(cls, with_feed_id: int):
