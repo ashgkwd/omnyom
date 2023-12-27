@@ -40,6 +40,15 @@ To run tests on a clean test db:
 bin/runtests
 ```
 
+## Development
+
+If you want to run any flask command, run it through the docker container
+
+```bash
+docker compose run omnyom 'flask do the magic'
+# docker compose run omnyom 'flask db migrate'
+```
+
 ## Schema
 
 Feed
