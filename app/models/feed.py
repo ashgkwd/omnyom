@@ -13,9 +13,7 @@ class Feed(db.Model):
     __tablename__ = 'feeds'
     id: Mapped[int] = mapped_column(primary_key=True)
     url: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    created_by_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"), nullable=True)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), default=func.now())
-    created_by: Mapped["User"] = relationship()
-    feed_items: Mapped[List["FeedItem"]] = relationship()
+    feed_items: Mapped[List["FeedItem"]] = relationship(
+        cascade="all, delete-orphan")
