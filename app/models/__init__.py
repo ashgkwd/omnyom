@@ -1,3 +1,3 @@
-__all__ = ["user", "feed", "feed_item", "subscription"]
+__all__ = ["user", "feed", "feed_item"]
 
 from . import *
