@@ -26,7 +26,6 @@ class FeedItem(db.Model):
         ForeignKey("feeds.id"), nullable=False)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), default=func.now())
-    # relationship(back_populates="feed_items")
     feed: Mapped["Feed"] = relationship()
 
     @classmethod

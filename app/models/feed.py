@@ -18,5 +18,4 @@ class Feed(db.Model):
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), default=func.now())
     created_by: Mapped["User"] = relationship()
-    # feed_items: Mapped[List["FeedItem"]] = relationship(
-    #     back_populates="feed", repr=False)
+    feed_items: Mapped[List["FeedItem"]] = relationship()
