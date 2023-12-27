@@ -1,7 +1,7 @@
 from flask import jsonify, request
 
 from . import app
-from .operations import search, subscribe
+from .operations import search, subscribe, unsubscribe
 
 
 @app.route("/")
@@ -14,6 +14,12 @@ def create_subscription():
     feed_url = request.get_json()['url']
     feed = subscribe.execute(feed_url)
     return {"data": {"id": feed.id}}
+
+
+@app.route("/unsubscribe/<feed_id>", methods=['DELETE'])
+def remove_subscription(feed_id: int):
+    feed = unsubscribe.execute(feed_id)
+    return {"data": feed}
 
 
 @app.route("/feeds")
