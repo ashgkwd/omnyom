@@ -3,9 +3,13 @@ from unittest.mock import Mock
 import dramatiq
 import pytest
 from dramatiq import Worker
+from sqlalchemy import select
 
 from app import app as app_test
+from app import db
 from app.initializers.dramatiq_redis import broker
+from app.models.feed import Feed
+from app.models.feed_item import FeedItem
 
 
 @pytest.fixture
@@ -82,8 +86,6 @@ def feed_item_data():
 @pytest.fixture
 def ensure_feed(feed_url):
     with app_test.app_context():
-        from app import db
-        from app.models.feed import Feed
         first_feed = db.session.query(Feed).first()
         if first_feed is None:
             feed = Feed(url=feed_url)
@@ -91,3 +93,14 @@ def ensure_feed(feed_url):
             db.session.commit()
             return feed.id
         return first_feed.id
+
+
+@pytest.fixture
+def ensure_feed_without_items(feed_url, ensure_feed):
+    feed_id = ensure_feed
+    with app_test.app_context():
+        feed_items = db.session.execute(select(FeedItem).where(
+            FeedItem.feed_id == feed_id)).scalars()
+        [db.session.delete(i) for i in feed_items]
+        db.session.commit()
+    return feed_id

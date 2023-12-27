@@ -5,9 +5,9 @@ from app.models.feed_item import FeedItem
 from app.operations import refresh, search
 
 
-def test_refresh(ensure_feed):
+def test_refresh(ensure_feed_without_items):
     with app.app_context():
-        feed = search.execute().first()
+        feed = search.find(ensure_feed_without_items)
         feed_items = list(refresh.execute(feed.id, feed.url))
         assert type(feed_items) is list
         assert type(feed_items[0]) is FeedItem

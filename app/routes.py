@@ -37,3 +37,12 @@ def feeds_show(feed_id: int):
     if feed is not None:
         return jsonify({"data": feed})
     return {"error": "feed not found"}
+
+
+@app.route("/feeds/<feed_id>/force_refresh", methods=['POST'])
+def force_refresh(feed_id):
+    feed = search.find(feed_id)
+    message = refresh.execute_async.send(feed.id, feed.url)
+    if message.message_id is not None:
+        return {"data": {"message": "force refresh is scheduled"}}
+    return {"error": "failed to schedule a force refresh"}
