@@ -32,6 +32,12 @@ To run tests in a running container:
 docker compose exec omnyom env APP_SETTINGS="app.config.TestConfig" pytest
 ```
 
+To run tests on a clean test db:
+
+```bash
+bin/runtests
+```
+
 ## Schema
 
 Feed
