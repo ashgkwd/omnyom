@@ -1,7 +1,7 @@
 from flask import jsonify, request
 
 from . import app
-from .operations import create_feed, search
+from .operations import search, subscribe
 
 
 @app.route("/")
@@ -9,10 +9,10 @@ def hello_world():
     return {"message": "Hello, World!"}
 
 
-@app.route("/feeds", methods=['POST'])
-def feeds_create():
+@app.route("/subscribe", methods=['POST'])
+def create_subscription():
     feed_url = request.get_json()['url']
-    feed = create_feed.execute(feed_url)
+    feed = subscribe.execute(feed_url)
     return {"data": {"id": feed.id}}
 
 

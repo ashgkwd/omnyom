@@ -3,9 +3,9 @@ import json
 from flask import url_for
 
 
-def test_feeds_create(client, post_headers, feed_url):
+def test_create_subscription(client, post_headers, feed_url):
     payload = json.dumps({'url': feed_url})
-    response = client.post(url_for("feeds_create"),
+    response = client.post(url_for("create_subscription"),
                            headers=post_headers, data=payload)
     assert response.status_code == 200
     assert response.json.get('data').get('id') is not None
