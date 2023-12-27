@@ -8,6 +8,13 @@ To get the application running:
 # build the main app image
 docker compose build omnyom
 
+# create secret files
+touch secrets/dev_database_secret.txt
+touch secrets/test_database_secret.txt
+# Put URI that can be used to connect to the db instance in respective secrets files
+# For example, for the test_database_secret, you can use
+# postgresql+psycopg2://devuser:dumbpass@pg:5432/test_omnyom
+
 # set up the database
 docker compose up -d pg
 export POSTGRES_USER=devuser
