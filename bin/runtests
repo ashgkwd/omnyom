@@ -1,8 +1,10 @@
+## This file runs all tests on a freshly created test database
+# if the name of test database or user is updated, please update it in secrets file as well
+
 TEST_DATABASE_NAME=test_omnyom
 TEST_DATABASE_URI=$(cat ./secrets/test_database_secret.txt)
-docker compose stop worker
+docker compose stop worker # real worker container is not need, see conftest.py
 docker compose up -d pg redis omnyom
-# docker compose run -d worker 'bash -c "env APP_SETTINGS=app.config.TestConfig dramatiq app.initializers.dramatiq_redis app.operations.refresh"'
 # NOTE: it may take some time before containers are ready
 # NOTE: db drop may take longer if its in use
 docker compose exec pg psql -U devuser -c "drop database $TEST_DATABASE_NAME;"
