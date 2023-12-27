@@ -26,6 +26,8 @@ To get in a running container:
 docker compose exec omnyom bash
 ```
 
+## Running tests
+
 To run tests in a running container:
 
 ```bash
