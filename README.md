@@ -56,6 +56,10 @@ docker compose run omnyom 'flask do the magic'
 # docker compose run omnyom 'flask db migrate'
 ```
 
+## Assumptions
+
+- User scoping is skipped from the implementation. So all users are treated as a single user. This also eliminates the need for user auth-related functionalities.
+
 ## Schema
 
 Feed
