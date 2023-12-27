@@ -4,8 +4,12 @@ from app import db
 from app.models.feed import Feed
 
 
-def execute():
-    smt = select(Feed).order_by(Feed.created_at)
+def execute(filter_by=None):
+    smt = select(Feed)
+    if filter_by is not None:
+        is_read = True if filter_by == 'read' else False
+        smt = smt.where(FeedItemRead.is_read == is_read)
+    smt = smt.order_by(Feed.created_at)
     return db.session.execute(smt).scalars()
 
 
