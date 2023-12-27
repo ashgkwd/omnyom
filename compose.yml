@@ -19,8 +19,6 @@ services:
     secrets:
       - dev_database_secret
       - test_database_secret
-    # environment:
-    # - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://devuser:dumbpass@pg:5432/omnyom
     ports:
       - "5000:5000"
     volumes:
