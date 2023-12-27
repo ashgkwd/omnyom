@@ -1,8 +1,10 @@
+import json
 from unittest.mock import Mock
 
 import dramatiq
 import pytest
 from dramatiq import Worker
+from flask import url_for
 
 from app import app as app_test
 from app.initializers.dramatiq_redis import broker
@@ -77,3 +79,17 @@ def feed_item_data():
         'guidislink': False,
         'published': 'Sun, 24 Dec 2023 21:08:41 GMT'
     }
+
+
+@pytest.fixture
+def ensure_feed(feed_url):
+    with app_test.app_context():
+        from app import db
+        from app.models.feed import Feed
+        first_feed = db.session.query(Feed).first()
+        if first_feed is None:
+            feed = Feed(url=feed_url)
+            db.session.add(feed)
+            db.session.commit()
+            return feed.id
+        return first_feed.id
