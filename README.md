@@ -58,7 +58,9 @@ docker compose run omnyom 'flask do the magic'
 
 ## Assumptions
 
-- User scoping is skipped from the implementation. So all users are treated as a single user. This also eliminates the need for user auth-related functionalities.
+- User scoping is skipped from the implementation. So all users are treated as a single user ('the user'). This also eliminates the need for user auth-related functionalities.
+- UPDATE: Entry in the Feed is treated as a subscription to the feed by 'the user'.
+- UPDATE: Removed user-specific entity relations as multi-tenancy is not implemented.
 
 ## Schema
 
@@ -66,7 +68,6 @@ Feed
 
 - has_many: Feed Items
 - url
-- created_by: User
 - created_at
 
 Feed Item
@@ -85,13 +86,7 @@ User
 - email
 - name
 
-Subscription
-
-- belongs_to: User
-- belongs_to: Feed
-
 Feed Item Read
 
 - belongs_to: Feed Item
-- belongs_to: Subscription
 - is_read (bool)
