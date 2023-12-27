@@ -1,5 +1,3 @@
-from app.models.feed import Feed
-
 from .. import app, db
 from . import search
 
