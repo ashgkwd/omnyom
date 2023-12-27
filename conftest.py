@@ -1,10 +1,8 @@
-import json
 from unittest.mock import Mock
 
 import dramatiq
 import pytest
 from dramatiq import Worker
-from flask import url_for
 
 from app import app as app_test
 from app.initializers.dramatiq_redis import broker

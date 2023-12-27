@@ -1,7 +1,10 @@
 from flask import jsonify, request
 
+# NOTE: Importing initializer here to ensure correct broker is picked
+import app.initializers.dramatiq_redis
+
 from . import app
-from .operations import search, subscribe, unsubscribe
+from .operations import refresh, search, subscribe, unsubscribe
 
 
 @app.route("/")
@@ -31,4 +34,6 @@ def feeds_index():
 @app.route("/feeds/<feed_id>")
 def feeds_show(feed_id: int):
     feed = search.find(feed_id)
-    return jsonify({"data": feed})
+    if feed is not None:
+        return jsonify({"data": feed})
+    return {"error": "feed not found"}
