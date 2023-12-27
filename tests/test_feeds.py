@@ -39,3 +39,10 @@ def test_force_refresh(client, post_headers, stub_broker, stub_worker, ensure_fe
     assert response.status_code == 200
     data = response.json.get('data')
     assert data.get('message') == "force refresh is scheduled"
+
+
+def test_feed_items_index(client, ensure_feed):
+    feed_id = ensure_feed
+    response = client.get(url_for("feed_items_index", feed_id=feed_id))
+    assert response.status_code == 200
+    assert response.json.get('data')[0].get('feed_id') == feed_id
