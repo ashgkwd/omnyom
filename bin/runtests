@@ -3,11 +3,18 @@
 
 TEST_DATABASE_NAME=test_omnyom
 TEST_DATABASE_URI=$(cat ./secrets/test_database_secret.txt)
-docker compose stop worker # real worker container is not need, see conftest.py
-docker compose up -d pg redis omnyom
+
+# Let's turn off worker so that it won't consume test messages
+# Let's also turn dev app instance to save memory
+docker compose stop worker omnyom
+docker compose up -d pg
 # NOTE: it may take some time before containers are ready
+
+# Setup DB for testing
 # NOTE: db drop may take longer if its in use
 docker compose exec pg psql -U devuser -c "drop database $TEST_DATABASE_NAME;"
 docker compose exec pg psql -U devuser -c "create database $TEST_DATABASE_NAME owner devuser;"
-docker compose exec omnyom bash -c "env SQLALCHEMY_DATABASE_URI=$TEST_DATABASE_URI APP_SETTINGS=app.config.TestConfig flask db upgrade"
-docker compose exec omnyom bash -c "env SQLALCHEMY_DATABASE_URI=$TEST_DATABASE_URI APP_SETTINGS=app.config.TestConfig pytest"
+
+# Run tests
+docker compose run --rm omnyom 'env APP_SETTINGS=app.config.TestConfig flask db upgrade'
+docker compose run --rm omnyom 'env APP_SETTINGS=app.config.TestConfig pytest'
