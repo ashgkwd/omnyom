@@ -7,6 +7,8 @@ from app.models.feed_item_read import FeedItemRead
 
 
 def execute(marked_as=None, feed_id=None):
+    app.logger.debug(
+        f"Search with marked_as={marked_as} and feed_id={feed_id}")
     smt = select(FeedItem)
     if marked_as is not None:
         if marked_as == 'read':

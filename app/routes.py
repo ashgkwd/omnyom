@@ -14,8 +14,9 @@ def hello_world():
 
 @app.route("/subscribe", methods=['POST'])
 def create_subscription():
-    feed_url = request.get_json()['url']
-    feed = subscribe.execute(feed_url)
+    feed_url = request.json.get('url')
+    perform_sync = request.json.get('perform_sync', False)
+    feed = subscribe.execute(feed_url, perform_sync=perform_sync)
     return {"data": {"id": feed.id}}
 
 

@@ -64,6 +64,11 @@ def feed_url():
 
 
 @pytest.fixture
+def second_feed_url():
+    return "http://www.nu.nl/rss/Algemeen"
+
+
+@pytest.fixture
 def feed_item_data():
     return {
         'title': 'Tribler 7.13.1',
@@ -94,6 +99,19 @@ def ensure_feed(feed_url):
             db.session.commit()
             return feed.id
         return first_feed.id
+
+
+@pytest.fixture
+def ensure_second_feed(second_feed_url):
+    with app_test.app_context():
+        second_feed = db.session.query(Feed).filter(
+            Feed.url == second_feed_url).first()
+        if second_feed is None:
+            feed = Feed(url=second_feed_url)
+            db.session.add(feed)
+            db.session.commit()
+            return feed.id
+        return second_feed.id
 
 
 @pytest.fixture
