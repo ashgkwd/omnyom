@@ -1,0 +1,2 @@
+0 * * * * python bin/refresh_feeds.py
+# at minute 0 of each hour. Ref: https://crontab.guru/every-1-hour
