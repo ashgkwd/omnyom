@@ -16,7 +16,7 @@ def test_refresh(ensure_feed_without_items):
 
 def test_refresh_async(ensure_feed, stub_broker, stub_worker, success_mock_and_actor, failure_mock_and_actor):
     with app.app_context():
-        feed = search.execute().first()
+        feed = search.feeds().first()
         success_mock, success_actor = success_mock_and_actor
         failure_mock, failure_actor = failure_mock_and_actor
 
@@ -37,7 +37,7 @@ def test_refresh_async(ensure_feed, stub_broker, stub_worker, success_mock_and_a
 
 def test_refresh_async_with_failure(ensure_feed, stub_broker, stub_worker, success_mock_and_actor, failure_mock_and_actor):
     with app.app_context():
-        feed = search.execute().first()
+        feed = search.feeds().first()
         success_mock, success_actor = success_mock_and_actor
         failure_mock, failure_actor = failure_mock_and_actor
 

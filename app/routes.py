@@ -25,15 +25,25 @@ def remove_subscription(feed_id: int):
     return {"data": feed}
 
 
-@app.route("/feeds")
-def feeds_index():
+@app.route("/search")
+def search_feed_items():
     """
-    Search feeds with given filters
+    Search feed items with given filters
 
     Args:
-    - filter_by: Optional[str] -- either 'read', 'unread' or None. None represents unfiltered
+    - marked_as: Optional[str] -- either 'read', 'unread' or None. None represents unfiltered
+    - feed_id: Optional[int] -- id of a feed or None. None represents unfiltered
     """
-    feeds = list(search.execute(request.args.get('filter_by')))
+    feed_items = list(search.execute(
+        marked_as=request.args.get('marked_as'),
+        feed_id=request.args.get('feed_id')
+    ))
+    return jsonify({"data": feed_items})
+
+
+@app.route("/feeds")
+def feeds_index():
+    feeds = list(search.feeds())
     return jsonify({"data": feeds})
 
 
